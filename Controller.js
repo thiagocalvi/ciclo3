@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-
 const models = require('./models');
+
 app.use(cors());
 app.use(express.json());
 
@@ -12,12 +12,7 @@ let itempedido = models.ItemPedido;
 let pedido = models.Pedido;
 let servico = models.Servico;
 
-
-
-app.get('/', function(req,res){
-    res.send('Olá, mundo')
-});
-
+//Cria um serviço pelo metodo post
 app.post('/servicos',async(req,res)=>{
     await servico.create(
         req.body   
@@ -34,34 +29,73 @@ app.post('/servicos',async(req,res)=>{
     });
 });
 
-app.get('/clientes', async(req,res)=>{
-    await cliente.create({
-        nome: 'Thiago',
-        endereco: 'Faria lemos',
-        cidade: 'Ivatuba',
-        uf: 'PR',
-        nascimento: '02/06/04',
-        clienteDesde: new Date()
+//Adiciona mu cliente pelo metodo post
+app.post('/clientes', async(req,res)=>{
+    await cliente.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            massage: 'Cliente adicionado com sucesso! '
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            massage: 'Foi impossivel se conectar.'
+        })
     });
-    res.send('Cliente registrado com sucesso!');
 });
 
-app.get('/pedidos', async (req,res)=>{
-    await pedido.create({
-        data: new Date() 
+//Registra um pedido pelo metodo post
+app.post('/pedidos', async(req,res)=>{
+    await pedido.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            massage: 'Pedido criado com sucesso!'
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            massage: 'Foi imposivel se conectar.'
+        })
     });
-    res.send('Pedido registrado com sucesso.')
 });
 
-app.get('/itempedido', async(req,res)=>{
-    await itempedido.create({
-        quatidade: '1',
-        valor: '10.50'
+//Cria a classe asociativa 
+app.post('/itempedido', async(req,res)=>{
+    await itempedido.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            massage: 'Sucesso!'
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            massage: 'Foi imposivel se conectar.'
+        })
     });
-    res.send('Registrado');
 });
 
 
+app.get('/listaservicos', async(req,res)=>{
+    await servico.findAll({
+        //raw: true
+        order:[['nome', 'DESC']]
+    }).then(function(servicos){
+        res.json({servicos})
+    });
+});
+
+
+app.get('/ofertaservicos', async(req,res)=>{
+    await servico.count('id').then(function(servicos){
+        res.json({servicos});
+    });
+});
 
 
 let port = process.env.PORT || 3001;
