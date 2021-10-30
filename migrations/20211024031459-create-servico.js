@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      ClienteId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        reference: {
+          model: 'clientes',
+          key: 'id'
+        }
+      },
       nome: {
         type: Sequelize.STRING
       },

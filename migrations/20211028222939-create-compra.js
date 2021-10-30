@@ -1,19 +1,15 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Pedidos', {
+    await queryInterface.createTable('Compras', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      dataPedido: {
+      data: {
         type: Sequelize.DATEONLY
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       },
       ClienteId: {
         allowNull: false,
@@ -21,9 +17,11 @@ module.exports = {
         reference: {
           model: 'clientes',
           key: 'id'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        }
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
@@ -32,6 +30,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Pedidos');
+    await queryInterface.dropTable('Compras');
   }
 };
